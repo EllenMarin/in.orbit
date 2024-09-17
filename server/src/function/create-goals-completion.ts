@@ -5,10 +5,12 @@ import dayjs from 'dayjs'
 
 interface CreateGoalCompletionRequest {
   goalId: string
+  createdAt: Date | null
 }
 
 export async function createGoalCompletion({
   goalId,
+  createdAt,
 }: CreateGoalCompletionRequest) {
   const firstDayOfWeek = dayjs().startOf('week').toDate()
   const lastDayOfWeek = dayjs().endOf('week').toDate()
@@ -51,9 +53,14 @@ export async function createGoalCompletion({
 
   const insertResult = await db
     .insert(goalCompletions)
-    .values({
-      goalId,
-    })
+    .values(
+      createdAt
+        ? {
+            goalId,
+            createdAt,
+          }
+        : { goalId }
+    )
     .returning()
 
   const goalCompletion = insertResult[0]

@@ -9,14 +9,16 @@ export const createCompletionRoute: FastifyPluginAsyncZod = async app => {
       schema: {
         body: z.object({
           goalId: z.string(),
+          createdAt: z.string().nullable(),
         }),
       },
     },
     async request => {
-      const { goalId } = request.body
+      const { goalId, createdAt } = request.body
 
       await createGoalCompletion({
         goalId,
+        createdAt: createdAt ? new Date(createdAt) : null,
       })
     }
   )
